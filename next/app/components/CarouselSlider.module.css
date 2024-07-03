@@ -1,0 +1,8 @@
+.component {
+  overflow: hidden;
+}
+
+.slider {
+  display: flex;
+  column-gap: 0px;
+}

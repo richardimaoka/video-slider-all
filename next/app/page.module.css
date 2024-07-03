@@ -1,0 +1,13 @@
+.component {
+  /* centering */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100svh;
+}
+
+.inner {
+  /* sizing */
+  width: 65%;
+}

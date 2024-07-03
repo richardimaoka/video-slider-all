@@ -1,0 +1,22 @@
+.component {
+  /* reset */
+  padding: 0;
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  background: none;
+
+  color: white;
+  font-size: 24px;
+  padding: 10px 20px;
+  margin-top: 20px;
+}
+
+.enabled {
+  background-color: #ff6600;
+}
+
+.disabled {
+  background-color: grey;
+}
