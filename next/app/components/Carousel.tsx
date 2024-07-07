@@ -20,16 +20,18 @@ export function Carousel(props: Props) {
   const [currentPageNum, setCurrentPageNum] = useState(props.initialPageNum);
   const lastPageNum = props.initialAllPages.length;
 
-  // page array with loading state
+  // state: page array with loading state
   const [allPages, setAllPages] = useState(props.initialAllPages);
 
   // Page num starts from 1, not 0
   const hasPrevPage = currentPageNum > 1;
   const hasNextPage = currentPageNum < lastPageNum;
 
+  // page paths in URL
   const prevPath = `?page=${currentPageNum - 1}`;
   const nextPath = `?page=${currentPageNum + 1}`;
 
+  // state change logic called upon page transition
   function onPrevPage() {
     setCurrentPageNum(currentPageNum - 1);
   }
@@ -38,6 +40,7 @@ export function Carousel(props: Props) {
     setCurrentPageNum(currentPageNum + 1);
   }
 
+  // state change logic called upon image load
   function onPageLoaded(pageNum: number) {
     // https://legacy.reactjs.org/docs/hooks-reference.html#functional-updates
     setAllPages((priorAllPages) => {
@@ -49,15 +52,29 @@ export function Carousel(props: Props) {
     });
   }
 
+  function shouldLoadPage(pageNum: number): boolean {
+    const N_morePagesToLoad = 5;
+
+    const forwardPages = allPages
+      .filter((p) => currentPageNum < p.pageNum && !p.isLoaded)
+      .slice(0, N_morePagesToLoad);
+
+    const backwardPages = allPages
+      .filter((p) => p.pageNum < currentPageNum && !p.isLoaded)
+      .slice(0, N_morePagesToLoad);
+
+    return (
+      forwardPages.findIndex((p) => p.pageNum === pageNum) > -1 ||
+      backwardPages.findIndex((p) => p.pageNum === pageNum) > -1
+    );
+  }
+
   // With eager-loading settings
   const isCurrentPageLoaded = allPages[currentPageNum - 1].isLoaded;
-  const adjacentPagesToEagerLoad = 5;
   const allPagesToPassDown = allPages.map((x) => ({
     ...x,
     // eager image loading, only when current page is already loaded && page is adjacent to the current page
-    eager:
-      isCurrentPageLoaded &&
-      Math.abs(currentPageNum - x.pageNum) <= adjacentPagesToEagerLoad,
+    eager: isCurrentPageLoaded && shouldLoadPage(x.pageNum),
   }));
 
   return (
